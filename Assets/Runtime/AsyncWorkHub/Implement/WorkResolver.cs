@@ -67,7 +67,10 @@ namespace MGS.Work
 
             if (tts < times)
             {
-                toleranceTimes[work.Key] = tts + 1;
+                if (!work.Error.Message.Contains("INFINITE_RETRY"))
+                {
+                    toleranceTimes[work.Key] = tts + 1;
+                }
                 return true;
             }
             else
