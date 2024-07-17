@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "com.mgs.cacher": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
-    "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.1",
     "com.unity.test-framework": "1.1.14",
