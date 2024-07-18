@@ -11,7 +11,6 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-#if UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID
 namespace MGS.Work
 {
     /// <summary>
@@ -20,4 +19,3 @@ namespace MGS.Work
     /// </summary>
     public interface IAsyncWorkMonoHub : IAsyncWorkStatusHub { }
 }
-#endif

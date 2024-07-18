@@ -72,13 +72,11 @@ namespace MGS.Work
             var workCacher = CreateCacher<IAsyncWork>(maxCacheCount);
             var resolver = CreateResolver(retryTimes, tolerables);
 
-#if UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID
+            //Thread work async, invoke the Update method to notify status in ours thread.
+            //return new AsyncWorkStatusHub(resultCacher, workCacher, 10, resolver);
+
             //Thread work async, notify status in unity main thread.
             return new AsyncWorkMonoHub(resultCacher, workCacher, 10, resolver);
-#else
-            //Thread work async, invoke the Update method to notify status in your thread.
-            return new AsyncWorkStatusHub(resultCacher, workCacher, 10, resolver);
-#endif
         }
 
         /// <summary>

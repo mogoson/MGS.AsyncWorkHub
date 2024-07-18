@@ -11,7 +11,6 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-#if UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID
 using MGS.Cachers;
 using System.Collections;
 using UnityEngine;
@@ -85,4 +84,3 @@ namespace MGS.Work
         }
     }
 }
-#endif
