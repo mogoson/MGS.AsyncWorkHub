@@ -97,7 +97,7 @@ namespace MGS.Work
         /// <summary>
         /// On execute work operation.
         /// </summary>
-        protected override void OnExecute()
+        protected override T OnExecute()
         {
             step = -1;
             foreach (var subWork in works)
@@ -109,11 +109,11 @@ namespace MGS.Work
                 if (subWork.Error != null)
                 {
                     Error = subWork.Error;
-                    return;
+                    return default;
                 }
                 progress += subWork.Progress * weights[step];
             }
-            Result = ResolveResult();
+            return ResolveResult();
         }
 
         /// <summary>

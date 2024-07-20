@@ -15,7 +15,7 @@ namespace Tests
             }
         }
 
-        protected override void OnExecute()
+        protected override string OnExecute()
         {
             Thread.Sleep(1000);
             Progress += 0.25f;
@@ -32,13 +32,13 @@ namespace Tests
             Thread.Sleep(1000);
             Progress += 0.25f;
             Debug.Log($"Work {Key} OnExecute Progress {Progress}");
-            Result = "Result of TestWork";
+            return "Result of TestWork";
         }
     }
 
     public class TestErrorWork : AsyncWork<string>
     {
-        protected override void OnExecute()
+        protected override string OnExecute()
         {
             Thread.Sleep(1000);
             Progress += 0.25f;

@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "1d30d3b9db4d9cb53ba0c975ae2d911b8ec15cc1"
+      "hash": "0a4caa3ea8f202cd38016f0745eb63e4240bbcc4"
     },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
@@ -38,15 +38,6 @@
         "com.unity.ext.nunit": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.cn"
-    },
-    "com.unity.textmeshpro": {
-      "version": "2.0.1",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0"
       },
       "url": "https://packages.unity.cn"
     },

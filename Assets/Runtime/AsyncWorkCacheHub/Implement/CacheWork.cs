@@ -30,6 +30,9 @@ namespace MGS.Work
         /// <summary>
         /// On execute work operation.
         /// </summary>
-        protected override void OnExecute() { }
+        protected override T OnExecute()
+        {
+            return Result;
+        }
     }
 }

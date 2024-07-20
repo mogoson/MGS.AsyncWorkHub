@@ -85,7 +85,7 @@ namespace MGS.Work
         {
             try
             {
-                OnExecute();
+                Result = OnExecute();
             }
             catch (Exception ex)
             {
@@ -109,7 +109,7 @@ namespace MGS.Work
                 {
                     try
                     {
-                        OnExecute();
+                        Result = OnExecute();
                     }
                     catch (Exception ex)
                     {
@@ -159,7 +159,7 @@ namespace MGS.Work
         /// <summary>
         /// On execute work operation.
         /// </summary>
-        protected abstract void OnExecute();
+        protected abstract T OnExecute();
 
         /// <summary>
         /// On work finally.
