@@ -1,7 +1,18 @@
 {
-    "description": "Hub to manage work and cache data, and notify status.",
-    "displayName": "Async Work Hub",
     "name": "com.mgs.asyncworkhub",
+    "version": "1.0.0",
+    "displayName": "Async Work Hub",
+    "description": "Hub to manage work and cache data, and notify status.",
     "unity": "2021.3",
-    "version": "1.0.0"
+    "keywords": [
+        "async",
+        "hub",
+        "manage",
+        "status"
+    ],
+    "author": {
+        "name": "Mogoson",
+        "email": "mogoson@outlook.com",
+        "url": "https://github.com/mogoson"
+    }
 }
