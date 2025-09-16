@@ -11,8 +11,8 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using MGS.Cachers;
 using System.Collections.Generic;
+using MGS.Cachers;
 
 namespace MGS.Work
 {
@@ -37,28 +37,35 @@ namespace MGS.Work
         /// </summary>
         /// <param name="resultCacher">Cacher for result.</param>
         /// <param name="workCacher">Cacher for work.</param>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="resolver">Resolver to check retrieable.</param>
-        public AsyncWorkStatusHub(ICacher<object> resultCacher = null,
-            ICacher<IAsyncWork> workCacher = null, int concurrency = 3, IWorkResolver resolver = null)
-            : base(resultCacher, workCacher, concurrency, resolver) { }
+        public AsyncWorkStatusHub(ICacher<object> resultCacher = null, ICacher<IAsyncWork> workCacher = null,
+            int interval = 250, int concurrency = 3, IRetryResolver resolver = null) :
+            base(resultCacher, workCacher, interval, concurrency, resolver)
+        { }
 
         /// <summary>
         /// Enqueue work to hub.
         /// </summary>
         /// <param name="work"></param>
         /// <returns></returns>
-        public new IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work)
+        public new IAsyncWorkHandler<T> Enqueue<T>(IAsyncWork<T> work)
         {
-            var enWork = base.EnqueueWork(work);
+            var enWork = base.Enqueue(work);
             return GetHandler(enWork);
         }
 
         /// <summary>
-        /// Tick update to notify status.
+        /// Notify status of works.
         /// </summary>
-        public void TickStatus()
+        public void NotifyStatus()
         {
+            if (handlers.Count == 0)
+            {
+                return;
+            }
+
             temps.AddRange(handlers.Keys);
             for (int i = 0; i < temps.Count; i++)
             {
@@ -87,15 +94,6 @@ namespace MGS.Work
         {
             base.Clear(workings, waitings);
             handlers.Clear();
-        }
-
-        /// <summary>
-        /// Abort async operations.
-        /// </summary>
-        public override void Abort()
-        {
-            base.Abort();
-            handlers = null;
         }
 
         /// <summary>

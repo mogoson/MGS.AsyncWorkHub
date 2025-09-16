@@ -1,8 +1,8 @@
-﻿using MGS.Work;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Threading;
+using MGS.Work;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -17,16 +17,12 @@ namespace Tests
         [SetUp]
         public void SetUp()
         {
-            var resultCacher = WorkHubFactory.CreateCacher<object>(100, 3000);
-            var workCacher = WorkHubFactory.CreateCacher<IAsyncWork>(100);
-            var resolver = WorkHubFactory.CreateResolver(3, null);
-            hub = new AsyncWorkStatusHub(resultCacher, workCacher, 3, resolver);
-
+            hub = WorkHubFactory.CreateStatusHub();
             thread = new Thread(() =>
             {
                 while (true)
                 {
-                    hub.TickStatus();
+                    hub.NotifyStatus();
                     Thread.Sleep(100);
                 }
             })
@@ -43,7 +39,7 @@ namespace Tests
             handler.Abort();
             handler = null;
 
-            hub.Abort();
+            hub.Deactivate();
             hub = null;
         }
 
@@ -54,7 +50,7 @@ namespace Tests
             string result = null;
             Exception error = null;
 
-            handler = hub.EnqueueWork(new TestWork());
+            handler = hub.Enqueue(new TestWork());
             handler.OnProgressChanged += p =>
             {
                 progress = p;

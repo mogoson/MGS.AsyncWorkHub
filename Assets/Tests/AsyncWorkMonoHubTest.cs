@@ -1,7 +1,7 @@
-﻿using MGS.Work;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
+using MGS.Work;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -9,13 +9,13 @@ namespace Tests
 {
     public class AsyncWorkMonoHubTest
     {
-        IAsyncWorkStatusHub hub;
+        IAsyncWorkMonoHub hub;
         IAsyncWorkHandler<string> handler;
 
         [SetUp]
         public void SetUp()
         {
-            hub = WorkHubFactory.CreateStatusHub(3);
+            hub = WorkHubFactory.CreateMonoHub();
         }
 
         [TearDown]
@@ -24,7 +24,7 @@ namespace Tests
             handler.Abort();
             handler = null;
 
-            hub.Abort();
+            hub.Deactivate();
             hub = null;
         }
 
@@ -35,7 +35,7 @@ namespace Tests
             string result = null;
             Exception error = null;
 
-            handler = hub.EnqueueWork(new TestWork());
+            handler = hub.Enqueue(new TestWork());
             handler.OnProgressChanged += p =>
             {
                 progress = p;

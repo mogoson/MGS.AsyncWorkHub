@@ -135,8 +135,7 @@ namespace MGS.Work
             {
                 if (thread.IsAlive)
                 {
-                    try { thread.Abort(); }
-                    catch (Exception ex) { Console.WriteLine($"{ex.Message}\r\n{ex.StackTrace}"); }
+                    thread.Abort();
                 }
                 thread = null;
             }

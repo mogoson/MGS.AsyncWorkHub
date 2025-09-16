@@ -24,11 +24,11 @@ namespace MGS.Work
         /// </summary>
         /// <param name="work"></param>
         /// <returns></returns>
-        new IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work);
+        new IAsyncWorkHandler<T> Enqueue<T>(IAsyncWork<T> work);
 
         /// <summary>
-        /// Tick update to notify status.
+        /// Notify status of works.
         /// </summary>
-        void TickStatus();
+        void NotifyStatus();
     }
 }

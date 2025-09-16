@@ -10,10 +10,10 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using MGS.Cachers;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using MGS.Cachers;
 
 namespace MGS.Work
 {
@@ -25,46 +25,49 @@ namespace MGS.Work
         /// <summary>
         /// Create hub with concurrency and retry ability.
         /// </summary>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="retryTimes">Retry times. do not active retry ability if let retryTimes=0.</param>
         /// <param name="tolerables">Tolerable exception types can be retry. default is [WebException,TimeoutException] if let it null.</param>
         /// <returns></returns>
-        public static IAsyncWorkHub CreateHub(int concurrency = 10,
+        public static IAsyncWorkHub CreateHub(int interval = 250, int concurrency = 10,
             int retryTimes = 3, ICollection<Type> tolerables = null)
         {
             var resolver = CreateResolver(retryTimes, tolerables);
-            return new AsyncWorkHub(concurrency, resolver);
+            return new AsyncWorkHub(interval, concurrency, resolver);
         }
 
         /// <summary>
         /// Create cache hub with concurrency and cache ability.
         /// </summary>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="retryTimes">Retry times. do not active retry ability if let retryTimes=0.</param>
         /// <param name="tolerables">Tolerable exception types can be retry. default is [WebException,TimeoutException] if let it null.</param>
         /// <param name="maxCacheCount">Max count of caches.</param>
         /// <param name="cacheTimeout">Timeout(ms)</param>
         /// <returns></returns>
-        public static IAsyncWorkCacheHub CreateCacheHub(int concurrency = 10,
+        public static IAsyncWorkCacheHub CreateCacheHub(int interval = 250, int concurrency = 10,
             int retryTimes = 3, ICollection<Type> tolerables = null,
             int maxCacheCount = 100, int cacheTimeout = 5000)
         {
             var resultCacher = CreateCacher<object>(maxCacheCount, cacheTimeout);
             var workCacher = CreateCacher<IAsyncWork>(maxCacheCount);
             var resolver = CreateResolver(retryTimes, tolerables);
-            return new AsyncWorkCacheHub(resultCacher, workCacher, concurrency, resolver);
+            return new AsyncWorkCacheHub(resultCacher, workCacher, interval, concurrency, resolver);
         }
 
         /// <summary>
         /// Create status hub with concurrency and cache ability.
         /// </summary>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="retryTimes">Retry times. do not active retry ability if let retryTimes=0.</param>
         /// <param name="tolerables">Tolerable exception types can be retry. default is [WebException,TimeoutException] if let it null.</param>
         /// <param name="maxCacheCount">Max count of caches.</param>
         /// <param name="cacheTimeout">Timeout(ms)</param>
         /// <returns></returns>
-        public static IAsyncWorkStatusHub CreateStatusHub(int concurrency = 10,
+        public static IAsyncWorkStatusHub CreateStatusHub(int interval = 250, int concurrency = 10,
             int retryTimes = 3, ICollection<Type> tolerables = null,
             int maxCacheCount = 100, int cacheTimeout = 5000)
         {
@@ -72,11 +75,30 @@ namespace MGS.Work
             var workCacher = CreateCacher<IAsyncWork>(maxCacheCount);
             var resolver = CreateResolver(retryTimes, tolerables);
 
-            //Thread work async, invoke the Update method to notify status in ours thread.
-            //return new AsyncWorkStatusHub(resultCacher, workCacher, 10, resolver);
+            //Thread async work, invoke the NotifyStatus method to notify status in your main thread.
+            return new AsyncWorkStatusHub(resultCacher, workCacher, interval, concurrency, resolver);
+        }
 
-            //Thread work async, notify status in unity main thread.
-            return new AsyncWorkMonoHub(resultCacher, workCacher, 10, resolver);
+        /// <summary>
+        /// Create status hub with concurrency and cache ability.
+        /// </summary>
+        /// <param name="interval">Interval of cruiser (ms).</param>
+        /// <param name="concurrency">Max count of concurrency works.</param>
+        /// <param name="retryTimes">Retry times. do not active retry ability if let retryTimes=0.</param>
+        /// <param name="tolerables">Tolerable exception types can be retry. default is [WebException,TimeoutException] if let it null.</param>
+        /// <param name="maxCacheCount">Max count of caches.</param>
+        /// <param name="cacheTimeout">Timeout(ms)</param>
+        /// <returns></returns>
+        public static IAsyncWorkMonoHub CreateMonoHub(int interval = 250, int concurrency = 10,
+            int retryTimes = 3, ICollection<Type> tolerables = null,
+            int maxCacheCount = 100, int cacheTimeout = 5000)
+        {
+            var resultCacher = CreateCacher<object>(maxCacheCount, cacheTimeout);
+            var workCacher = CreateCacher<IAsyncWork>(maxCacheCount);
+            var resolver = CreateResolver(retryTimes, tolerables);
+
+            //Thread async work, notify status in unity main thread.
+            return new AsyncWorkMonoHub(resultCacher, workCacher, interval, concurrency, resolver);
         }
 
         /// <summary>
@@ -85,7 +107,7 @@ namespace MGS.Work
         /// <param name="retryTimes">Retry times. do not active retry ability if let retryTimes=0.</param>
         /// <param name="tolerables">Tolerable exception types can be retry. default is [WebException,TimeoutException] if let it null.</param>
         /// <returns></returns>
-        public static IWorkResolver CreateResolver(int retryTimes, ICollection<Type> tolerables)
+        public static IRetryResolver CreateResolver(int retryTimes, ICollection<Type> tolerables)
         {
             if (retryTimes <= 0)
             {
@@ -97,7 +119,7 @@ namespace MGS.Work
             {
                 tolerables = new List<Type> { typeof(WebException), typeof(TimeoutException) };
             }
-            return new WorkResolver(retryTimes, tolerables);
+            return new RetryResolver(retryTimes, tolerables);
         }
 
         /// <summary>

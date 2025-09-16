@@ -21,6 +21,16 @@ namespace MGS.Work
     public class AsyncWorkHub : IAsyncWorkHub
     {
         /// <summary>
+        /// Cruiser is active?
+        /// </summary>
+        public bool IsActive { get { return thread != null && thread.IsAlive; } }
+
+        /// <summary>
+        /// Interval of cruiser (ms).
+        /// </summary>
+        public int Interval { set; get; }
+
+        /// <summary>
         /// Max count of concurrency works.
         /// </summary>
         public int Concurrency { set; get; }
@@ -38,7 +48,7 @@ namespace MGS.Work
         /// <summary>
         /// Resolver to check retrieable.
         /// </summary>
-        public IWorkResolver Resolver { set; get; }
+        public IRetryResolver Resolver { set; get; }
 
         /// <summary>
         /// Queue for waiting works.
@@ -51,25 +61,21 @@ namespace MGS.Work
         protected List<IAsyncWork> workingWorks = new List<IAsyncWork>();
 
         /// <summary>
-        /// Cycle(ms) for one tick.
+        /// Cruiser thread
         /// </summary>
-        protected const int TICK_CYCLE = 250;
-
-        /// <summary>
-        /// Mark is aborted?
-        /// </summary>
-        protected bool isAborted;
+        protected Thread thread;
 
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="resolver">Resolver to check retrieable.</param>
-        public AsyncWorkHub(int concurrency = 3, IWorkResolver resolver = null)
+        public AsyncWorkHub(int interval = 250, int concurrency = 3, IRetryResolver resolver = null)
         {
+            Interval = interval;
             Concurrency = concurrency;
             Resolver = resolver;
-            new Thread(Tick) { IsBackground = true }.Start();
         }
 
         /// <summary>
@@ -78,7 +84,7 @@ namespace MGS.Work
         /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        public virtual IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work)
+        public virtual IAsyncWork<T> Enqueue<T>(IAsyncWork<T> work)
         {
             waitingWorks.Enqueue(work);
             return work;
@@ -107,33 +113,48 @@ namespace MGS.Work
         }
 
         /// <summary>
-        /// Abort async operations.
+        /// Activate cruiser.
         /// </summary>
-        public virtual void Abort()
+        public virtual void Activate()
         {
-            Clear(true, true);
-            workingWorks = null;
-            waitingWorks = null;
-            Resolver = null;
-            isAborted = true;
-        }
-
-        /// <summary>
-        /// Tick loop to update.
-        /// </summary>
-        private void Tick()
-        {
-            while (!isAborted)
+            if (thread == null)
             {
-                TickUpdate();
-                Thread.Sleep(TICK_CYCLE);
+                thread = new Thread(StartCruiser) { IsBackground = true };
+                thread.Start();
             }
         }
 
         /// <summary>
-        /// Update to dispatch works.
+        /// Deactivate cruiser.
         /// </summary>
-        private void TickUpdate()
+        public virtual void Deactivate()
+        {
+            if (thread != null)
+            {
+                if (thread.IsAlive)
+                {
+                    thread.Abort();
+                }
+                thread = null;
+            }
+        }
+
+        /// <summary>
+        /// Start cruiser to tick loop.
+        /// </summary>
+        protected void StartCruiser()
+        {
+            while (true)
+            {
+                CruiserTick();
+                Thread.Sleep(Interval);
+            }
+        }
+
+        /// <summary>
+        /// Cruiser tick every cycle.
+        /// </summary>
+        protected virtual void CruiserTick()
         {
             // Dequeue waitings to workings.
             while (waitingWorks.Count > 0 && workingWorks.Count < Concurrency)
@@ -141,7 +162,7 @@ namespace MGS.Work
                 var work = waitingWorks.Dequeue();
                 if (work.IsDone)
                 {
-                    ClearResolver(work);
+                    ClearRetryHistory(work);
                     OnWorkIsDone(work);
                     continue;
                 }
@@ -156,14 +177,14 @@ namespace MGS.Work
                 var work = workingWorks[i];
                 if (work.IsDone)
                 {
-                    if (work.Error != null&& CheckRetrieable(work))
+                    if (work.Error != null && CheckRetrieable(work))
                     {
                         work.ExecuteAsync();
                         continue;
                     }
 
                     workingWorks.RemoveAt(i);
-                    ClearResolver(work);
+                    ClearRetryHistory(work);
                     OnWorkIsDone(work);
                     i--;
                 }
@@ -176,7 +197,7 @@ namespace MGS.Work
         /// <param name="work"></param>
         protected virtual void OnWorkIsDone(IAsyncWork work)
         {
-            Resolver?.Clear(work);
+            ClearRetryHistory(work);
         }
 
         /// <summary>
@@ -194,10 +215,10 @@ namespace MGS.Work
         }
 
         /// <summary>
-        /// Clear the history of work in resolver.
+        /// Clear the retry history of work in resolver.
         /// </summary>
         /// <param name="work"></param>
-        protected void ClearResolver(IAsyncWork work)
+        protected void ClearRetryHistory(IAsyncWork work)
         {
             Resolver?.Clear(work);
         }

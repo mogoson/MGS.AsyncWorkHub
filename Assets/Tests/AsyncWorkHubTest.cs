@@ -1,6 +1,6 @@
-﻿using MGS.Work;
+﻿using System.Collections;
+using MGS.Work;
 using NUnit.Framework;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -14,7 +14,7 @@ namespace Tests
         [SetUp]
         public void SetUp()
         {
-            hub = WorkHubFactory.CreateHub(3);
+            hub = WorkHubFactory.CreateHub();
         }
 
         [TearDown]
@@ -23,14 +23,14 @@ namespace Tests
             work.AbortAsync();
             work = null;
 
-            hub.Abort();
+            hub.Deactivate();
             hub = null;
         }
 
         [UnityTest]
         public IEnumerator TestEnqueueWork()
         {
-            work = hub.EnqueueWork(new TestWork());
+            work = hub.Enqueue(new TestWork());
             while (!work.IsDone)
             {
                 yield return null;
@@ -45,10 +45,10 @@ namespace Tests
         [UnityTest]
         public IEnumerator TestConcurrency()
         {
-            work = hub.EnqueueWork(new TestWork());
-            work = hub.EnqueueWork(new TestWork());
-            work = hub.EnqueueWork(new TestWork());
-            work = hub.EnqueueWork(new TestWork());
+            work = hub.Enqueue(new TestWork());
+            work = hub.Enqueue(new TestWork());
+            work = hub.Enqueue(new TestWork());
+            work = hub.Enqueue(new TestWork());
 
             yield return new WaitForSeconds(3.0f);
 
@@ -62,9 +62,9 @@ namespace Tests
         [UnityTest]
         public IEnumerator TestClear()
         {
-            work = hub.EnqueueWork(new TestWork());
-            work = hub.EnqueueWork(new TestWork());
-            work = hub.EnqueueWork(new TestWork());
+            work = hub.Enqueue(new TestWork());
+            work = hub.Enqueue(new TestWork());
+            work = hub.Enqueue(new TestWork());
 
             yield return new WaitForSeconds(3.0f);
             hub.Clear(true, true);

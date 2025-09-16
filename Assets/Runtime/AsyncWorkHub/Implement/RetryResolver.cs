@@ -1,7 +1,7 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  WorkResolver.cs
+ *  File         :  RetryResolver.cs
  *  Description  :  Resolver to check work retrieable.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
@@ -18,7 +18,7 @@ namespace MGS.Work
     /// <summary>
     /// Resolver to check work retrieable.
     /// </summary>
-    public class WorkResolver : IWorkResolver
+    public class RetryResolver : IRetryResolver
     {
         /// <summary>
         /// Retry times.
@@ -40,7 +40,7 @@ namespace MGS.Work
         /// </summary>
         /// <param name="times">Retry times.</param>
         /// <param name="tolerables">Tolerable exception types can be retry.</param>
-        public WorkResolver(int times, ICollection<Type> tolerables)
+        public RetryResolver(int times, ICollection<Type> tolerables)
         {
             this.times = times;
             this.tolerables = tolerables;
@@ -67,11 +67,7 @@ namespace MGS.Work
 
             if (tts < times)
             {
-                if (string.IsNullOrEmpty(work.Error.Message) ||
-                    !work.Error.Message.Contains("INFINITE_RETRY"))
-                {
-                    toleranceTimes[work.Key] = tts + 1;
-                }
+                toleranceTimes[work.Key] = tts + 1;
                 return true;
             }
             else

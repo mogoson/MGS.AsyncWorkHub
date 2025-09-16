@@ -34,10 +34,12 @@ namespace MGS.Work
         /// </summary>
         /// <param name="resultCacher">Cacher for result.</param>
         /// <param name="workCacher">Cacher for work.</param>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="resolver">Resolver to check work retrieable.</param>
         public AsyncWorkCacheHub(ICacher<object> resultCacher = null, ICacher<IAsyncWork> workCacher = null,
-            int concurrency = 3, IWorkResolver resolver = null) : base(concurrency, resolver)
+            int interval = 250, int concurrency = 3, IRetryResolver resolver = null) :
+            base(interval, concurrency, resolver)
         {
             ResultCacher = resultCacher;
             WorksCacher = workCacher;
@@ -49,12 +51,12 @@ namespace MGS.Work
         /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        public override IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work)
+        public override IAsyncWork<T> Enqueue<T>(IAsyncWork<T> work)
         {
             var enWork = GetCacheAsWork<T>(work.Key);
             if (enWork == null)
             {
-                enWork = base.EnqueueWork(work);
+                enWork = base.Enqueue(work);
                 SetCacheWork(enWork.Key, enWork);
             }
             return enWork;
@@ -71,20 +73,6 @@ namespace MGS.Work
 
             ResultCacher.Clear();
             WorksCacher.Clear();
-        }
-
-        /// <summary>
-        /// Abort async operations.
-        /// </summary>
-        public override void Abort()
-        {
-            base.Abort();
-
-            ResultCacher.Dispose();
-            ResultCacher = null;
-
-            WorksCacher.Dispose();
-            WorksCacher = null;
         }
 
         /// <summary>

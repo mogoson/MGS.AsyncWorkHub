@@ -11,8 +11,8 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using MGS.Cachers;
 using System.Collections;
+using MGS.Cachers;
 using UnityEngine;
 
 namespace MGS.Work
@@ -31,55 +31,65 @@ namespace MGS.Work
         /// <summary>
         /// MonoBehaviour for hub to StartCoroutine.
         /// </summary>
-        protected WorkHubBehaviour behaviour;
+        protected WorkHubBehaviour notifier;
 
         /// <summary>
-        /// Yield Instruction for tick update.
+        /// Yield Instruction for notifier tick.
         /// </summary>
-        protected YieldInstruction instruction;
+        public YieldInstruction Instruction { set; get; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="resultCacher">Cacher for result.</param>
         /// <param name="workCacher">Cacher for work.</param>
+        /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="resolver">Resolver to check retrieable.</param>
-        public AsyncWorkMonoHub(ICacher<object> resultCacher = null,
-            ICacher<IAsyncWork> workCacher = null, int concurrency = 3, IWorkResolver resolver = null)
-            : base(resultCacher, workCacher, concurrency, resolver)
+        public AsyncWorkMonoHub(ICacher<object> resultCacher = null, ICacher<IAsyncWork> workCacher = null,
+            int interval = 250, int concurrency = 3, IRetryResolver resolver = null) :
+            base(resultCacher, workCacher, interval, concurrency, resolver)
         {
-            instruction = new WaitForSeconds(TICK_CYCLE * 0.001f);
-            behaviour = new GameObject(typeof(WorkHubBehaviour).Name).AddComponent<WorkHubBehaviour>();
-            behaviour.StartCoroutine(TickUpdate());
-            Object.DontDestroyOnLoad(behaviour.gameObject);
+            Instruction = new WaitForEndOfFrame();
         }
 
         /// <summary>
-        /// Abort async operations.
+        /// Activate cruiser.
         /// </summary>
-        public override void Abort()
+        public override void Activate()
         {
-            base.Abort();
-
-            instruction = null;
-            if (behaviour != null)
+            base.Activate();
+            if (notifier == null)
             {
-                Object.Destroy(behaviour.gameObject);
-                behaviour = null;
+                notifier = new GameObject(nameof(WorkHubBehaviour)).AddComponent<WorkHubBehaviour>();
+                Object.DontDestroyOnLoad(notifier.gameObject);
+                notifier.StartCoroutine(StartNotifier());
             }
         }
 
         /// <summary>
-        /// MonoBehaviour tick to update.
+        /// Deactivate cruiser.
+        /// </summary>
+        public override void Deactivate()
+        {
+            base.Deactivate();
+            if (notifier != null)
+            {
+                Object.Destroy(notifier.gameObject);
+                notifier = null;
+            }
+        }
+
+        /// <summary>
+        /// Start notifier to tick loop.
         /// </summary>
         /// <returns></returns>
-        private IEnumerator TickUpdate()
+        protected IEnumerator StartNotifier()
         {
-            while (!isAborted)
+            while (true)
             {
-                TickStatus();
-                yield return instruction;
+                NotifyStatus();
+                yield return Instruction;
             }
         }
     }

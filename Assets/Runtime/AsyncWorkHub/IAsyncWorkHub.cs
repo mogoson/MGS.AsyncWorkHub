@@ -15,7 +15,7 @@ namespace MGS.Work
     /// <summary>
     /// Interface of hub to manage works.
     /// </summary>
-    public interface IAsyncWorkHub
+    public interface IAsyncWorkHub : IAsyncCruiser
     {
         /// <summary>
         /// Max count of concurrency works.
@@ -35,7 +35,7 @@ namespace MGS.Work
         /// <summary>
         /// Resolver to check work retrieable.
         /// </summary>
-        IWorkResolver Resolver { set; get; }
+        IRetryResolver Resolver { set; get; }
 
         /// <summary>
         /// Enqueue work to hub.
@@ -43,7 +43,7 @@ namespace MGS.Work
         /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work);
+        IAsyncWork<T> Enqueue<T>(IAsyncWork<T> work);
 
         /// <summary>
         /// Clear cache resources.
@@ -51,10 +51,5 @@ namespace MGS.Work
         /// <param name="workings">Clear the working works?</param>
         /// <param name="waitings">Clear the waiting works?</param>
         void Clear(bool workings, bool waitings);
-
-        /// <summary>
-        /// Abort async operations.
-        /// </summary>
-        void Abort();
     }
 }

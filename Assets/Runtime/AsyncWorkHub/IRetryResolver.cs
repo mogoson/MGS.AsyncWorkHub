@@ -1,7 +1,7 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  IWorkResolver.cs
+ *  File         :  IRetryResolver.cs
  *  Description  :  Interface of resolver to check work retrieable.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
@@ -15,7 +15,7 @@ namespace MGS.Work
     /// <summary>
     /// Interface of resolver to check work retrieable.
     /// </summary>
-    public interface IWorkResolver
+    public interface IRetryResolver
     {
         /// <summary>
         /// Check check is retrieable?

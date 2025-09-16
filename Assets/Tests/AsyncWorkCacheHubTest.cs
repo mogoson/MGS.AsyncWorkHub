@@ -1,6 +1,6 @@
-﻿using MGS.Work;
+﻿using System.Collections;
+using MGS.Work;
 using NUnit.Framework;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -14,7 +14,7 @@ namespace Tests
         [SetUp]
         public void SetUp()
         {
-            hub = WorkHubFactory.CreateCacheHub(3);
+            hub = WorkHubFactory.CreateCacheHub();
         }
 
         [TearDown]
@@ -23,7 +23,7 @@ namespace Tests
             work.AbortAsync();
             work = null;
 
-            hub.Abort();
+            hub.Deactivate();
             hub = null;
         }
 
@@ -32,8 +32,8 @@ namespace Tests
         {
             var key = "Key to test cache.";
 
-            var hashCode = hub.EnqueueWork(new TestWork(key)).GetHashCode();
-            work = hub.EnqueueWork(new TestWork(key));//Work object cache.
+            var hashCode = hub.Enqueue(new TestWork(key)).GetHashCode();
+            work = hub.Enqueue(new TestWork(key));//Work object cache.
 
             Assert.AreEqual(work.GetHashCode(), hashCode);
 
@@ -48,7 +48,7 @@ namespace Tests
             Assert.IsNotNull(work.Result);
 
             yield return new WaitForSeconds(0.5f);
-            work = hub.EnqueueWork(new TestWork(key));//Result object cache.
+            work = hub.Enqueue(new TestWork(key));//Result object cache.
             Assert.AreEqual(work.GetType(), typeof(CacheWork<string>));
 
             Assert.IsNull(work.Error);
