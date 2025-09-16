@@ -11,25 +11,14 @@
  *************************************************************************/
 
 using System.Collections.Generic;
-using System.Threading;
 
 namespace MGS.Work
 {
     /// <summary>
     /// Hub to manage works.
     /// </summary>
-    public class AsyncWorkHub : IAsyncWorkHub
+    public class AsyncWorkHub : AsyncCruiser, IAsyncWorkHub
     {
-        /// <summary>
-        /// Cruiser is active?
-        /// </summary>
-        public bool IsActive { get { return thread != null && thread.IsAlive; } }
-
-        /// <summary>
-        /// Interval of cruiser (ms).
-        /// </summary>
-        public int Interval { set; get; }
-
         /// <summary>
         /// Max count of concurrency works.
         /// </summary>
@@ -61,19 +50,14 @@ namespace MGS.Work
         protected List<IAsyncWork> workingWorks = new List<IAsyncWork>();
 
         /// <summary>
-        /// Cruiser thread
-        /// </summary>
-        protected Thread thread;
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="interval">Interval of cruiser (ms).</param>
         /// <param name="concurrency">Max count of concurrency works.</param>
         /// <param name="resolver">Resolver to check retrieable.</param>
-        public AsyncWorkHub(int interval = 250, int concurrency = 3, IRetryResolver resolver = null)
+        public AsyncWorkHub(int interval = 250, int concurrency = 3, IRetryResolver resolver = null) :
+            base(interval)
         {
-            Interval = interval;
             Concurrency = concurrency;
             Resolver = resolver;
         }
@@ -113,48 +97,9 @@ namespace MGS.Work
         }
 
         /// <summary>
-        /// Activate cruiser.
-        /// </summary>
-        public virtual void Activate()
-        {
-            if (thread == null)
-            {
-                thread = new Thread(StartCruiser) { IsBackground = true };
-                thread.Start();
-            }
-        }
-
-        /// <summary>
-        /// Deactivate cruiser.
-        /// </summary>
-        public virtual void Deactivate()
-        {
-            if (thread != null)
-            {
-                if (thread.IsAlive)
-                {
-                    thread.Abort();
-                }
-                thread = null;
-            }
-        }
-
-        /// <summary>
-        /// Start cruiser to tick loop.
-        /// </summary>
-        protected void StartCruiser()
-        {
-            while (true)
-            {
-                CruiserTick();
-                Thread.Sleep(Interval);
-            }
-        }
-
-        /// <summary>
         /// Cruiser tick every cycle.
         /// </summary>
-        protected virtual void CruiserTick()
+        protected override void CruiserTick()
         {
             // Dequeue waitings to workings.
             while (waitingWorks.Count > 0 && workingWorks.Count < Concurrency)
