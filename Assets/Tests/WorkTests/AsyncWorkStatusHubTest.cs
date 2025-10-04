@@ -17,6 +17,8 @@ namespace MGS.Work.Tests
         public void SetUp()
         {
             hub = WorkHubFactory.CreateStatusHub();
+            hub.Activate();
+
             thread = new Thread(() =>
             {
                 while (true)
@@ -43,7 +45,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator GetCallback()
+        public IEnumerator CallbackTest()
         {
             var progress = 0f;
             string result = null;

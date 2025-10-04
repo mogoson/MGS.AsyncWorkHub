@@ -8,7 +8,7 @@ namespace MGS.Work.Tests
     public class AsyncWorkTest
     {
         [Test]
-        public void TestExecute()
+        public void ExecuteTest()
         {
             var work = new TestWork();
             work.Execute();
@@ -19,7 +19,7 @@ namespace MGS.Work.Tests
         }
 
         [Test]
-        public void TestExecuteError()
+        public void ExecuteErrorTest()
         {
             var work = new TestErrorWork();
             work.Execute();
@@ -30,7 +30,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator TestExecuteAsync()
+        public IEnumerator ExecuteAsyncTest()
         {
             var work = new TestWork();
             work.ExecuteAsync();

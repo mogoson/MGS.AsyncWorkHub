@@ -15,6 +15,7 @@ namespace MGS.Work.Tests
         public void SetUp()
         {
             hub = WorkHubFactory.CreateMonoHub();
+            hub.Activate();
         }
 
         [TearDown]
@@ -28,7 +29,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator GetCallback()
+        public IEnumerator CallbackTest()
         {
             var progress = 0f;
             string result = null;

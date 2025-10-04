@@ -24,14 +24,14 @@ namespace MGS.Work
     public class AsyncWorkMonoHub : AsyncWorkStatusHub, IAsyncWorkMonoHub
     {
         /// <summary>
-        /// WorkHubBehaviour to handle MonoBehaviour.
+        /// Agent of MonoBehaviour.
         /// </summary>
-        protected class WorkHubBehaviour : MonoBehaviour { }
+        protected class AgentMono : MonoBehaviour { }
 
         /// <summary>
-        /// MonoBehaviour for hub to StartCoroutine.
+        /// Agent of MonoBehaviour.
         /// </summary>
-        protected WorkHubBehaviour notifier;
+        protected AgentMono mono;
 
         /// <summary>
         /// Yield Instruction for notifier tick.
@@ -59,11 +59,11 @@ namespace MGS.Work
         public override void Activate()
         {
             base.Activate();
-            if (notifier == null)
+            if (mono == null)
             {
-                notifier = new GameObject(nameof(WorkHubBehaviour)).AddComponent<WorkHubBehaviour>();
-                Object.DontDestroyOnLoad(notifier.gameObject);
-                notifier.StartCoroutine(StartNotifier());
+                mono = new GameObject(GetType().Name).AddComponent<AgentMono>();
+                Object.DontDestroyOnLoad(mono.gameObject);
+                mono.StartCoroutine(StartNotifier());
             }
         }
 
@@ -73,10 +73,10 @@ namespace MGS.Work
         public override void Deactivate()
         {
             base.Deactivate();
-            if (notifier != null)
+            if (mono != null)
             {
-                Object.Destroy(notifier.gameObject);
-                notifier = null;
+                Object.Destroy(mono.gameObject);
+                mono = null;
             }
         }
 

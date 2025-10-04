@@ -13,7 +13,8 @@ namespace MGS.Work.Tests
         [SetUp]
         public void SetUp()
         {
-            hub = WorkHubFactory.CreateHub();
+            hub = WorkHubFactory.CreateHub(250, 3);
+            hub.Activate();
         }
 
         [TearDown]
@@ -27,7 +28,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator TestEnqueueWork()
+        public IEnumerator EnqueueWorkTest()
         {
             work = hub.Enqueue(new TestWork());
             while (!work.IsDone)
@@ -42,7 +43,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator TestConcurrency()
+        public IEnumerator ConcurrencyTest()
         {
             work = hub.Enqueue(new TestWork());
             work = hub.Enqueue(new TestWork());
@@ -59,7 +60,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator TestClear()
+        public IEnumerator ClearTest()
         {
             work = hub.Enqueue(new TestWork());
             work = hub.Enqueue(new TestWork());

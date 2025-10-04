@@ -14,6 +14,7 @@ namespace MGS.Work.Tests
         public void SetUp()
         {
             hub = WorkHubFactory.CreateCacheHub();
+            hub.Activate();
         }
 
         [TearDown]
@@ -27,7 +28,7 @@ namespace MGS.Work.Tests
         }
 
         [UnityTest]
-        public IEnumerator TestEnqueueWork()
+        public IEnumerator EnqueueWorkTest()
         {
             var key = "Key to test cache.";
 
