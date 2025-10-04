@@ -1,10 +1,13 @@
 {
     "name": "MGS.AsyncWorkHub.Tests",
+    "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "MGS.AsyncWorkHub",
-        "MGS.Cachers"
+        "MGS.Cachers",
+        "MGS.MonoAgent",
+        "MGS.AsyncCruiser"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

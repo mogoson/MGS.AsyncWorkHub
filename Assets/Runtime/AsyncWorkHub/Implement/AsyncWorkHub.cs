@@ -11,13 +11,14 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using MGS.Cruiser;
 
 namespace MGS.Work
 {
     /// <summary>
     /// Hub to manage works.
     /// </summary>
-    public class AsyncWorkHub : AsyncCruiser, IAsyncWorkHub
+    public class AsyncWorkHub : ThreadCruiser, IAsyncWorkHub
     {
         /// <summary>
         /// Max count of concurrency works.

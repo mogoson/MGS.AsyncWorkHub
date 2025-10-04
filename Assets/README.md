@@ -21,6 +21,8 @@ Unity plugin for develop with async work.
 
   ```text
   https://github.com/mogoson/MGS.Cacher.git?path=/Assets
+  https://github.com/mogoson/MGS.MonoAgent.git?path=/Assets
+  https://github.com/mogoson/MGS.AsyncCruiser.git?path=/Assets
   https://github.com/mogoson/MGS.AsyncWorkHub.git?path=/Assets
   ```
 ---

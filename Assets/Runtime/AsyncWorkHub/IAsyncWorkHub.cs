@@ -10,6 +10,8 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
+using MGS.Cruiser;
+
 namespace MGS.Work
 {
     /// <summary>

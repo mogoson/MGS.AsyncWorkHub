@@ -1,9 +1,8 @@
-﻿using MGS.Work;
-using System;
+﻿using System;
 using System.Threading;
 using UnityEngine;
 
-namespace Tests
+namespace MGS.Work.Tests
 {
     public class TestWork : AsyncWork<string>
     {

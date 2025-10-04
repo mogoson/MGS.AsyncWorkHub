@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
-using MGS.Work;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace MGS.Work.Tests
 {
     public class AsyncWorkMonoHubTest
     {
