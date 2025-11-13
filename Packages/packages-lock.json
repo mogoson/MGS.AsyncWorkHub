@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.mgs.asynccruiser": {
-      "version": "https://github.com/mogoson/MGS.AsyncCruiser.git?path=/Assets",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "4f13db86afb5a2f4126683b2c6073094db40a6b8"
-    },
     "com.mgs.cacher": {
       "version": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
       "depth": 0,
@@ -14,12 +7,19 @@
       "dependencies": {},
       "hash": "db7560ae7df3a62d6d9990c3cb08eee9f6715fcd"
     },
+    "com.mgs.cruiser": {
+      "version": "https://github.com/mogoson/MGS.Cruiser.git?path=/Assets",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2d1809c272d5ebb1eac5856d651ec24078a4bb35"
+    },
     "com.mgs.monoagent": {
       "version": "https://github.com/mogoson/MGS.MonoAgent.git?path=/Assets",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "6038d1eba47fdea5eaeead386ecf5aca01d4f16a"
+      "hash": "73f89f6151494832ee372ab0e763098f911add8f"
     },
     "com.unity.collab-proxy": {
       "version": "2.3.1",

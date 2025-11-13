@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.mgs.asynccruiser": "https://github.com/mogoson/MGS.AsyncCruiser.git?path=/Assets",
     "com.mgs.cacher": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
+    "com.mgs.cruiser": "https://github.com/mogoson/MGS.Cruiser.git?path=/Assets",
     "com.mgs.monoagent": "https://github.com/mogoson/MGS.MonoAgent.git?path=/Assets",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.ide.rider": "3.0.28",

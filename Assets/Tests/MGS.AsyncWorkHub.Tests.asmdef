@@ -7,7 +7,7 @@
         "MGS.AsyncWorkHub",
         "MGS.Cachers",
         "MGS.MonoAgent",
-        "MGS.AsyncCruiser"
+        "MGS.Cruiser"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

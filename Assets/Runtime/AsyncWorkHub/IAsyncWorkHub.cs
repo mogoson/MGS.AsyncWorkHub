@@ -17,7 +17,7 @@ namespace MGS.Work
     /// <summary>
     /// Interface of hub to manage works.
     /// </summary>
-    public interface IAsyncWorkHub : IAsyncCruiser
+    public interface IAsyncWorkHub : ICruiser
     {
         /// <summary>
         /// Max count of concurrency works.
